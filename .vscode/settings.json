@@ -1,9 +1,18 @@
 {
   "solidity.compileUsingRemoteVersion": "v0.8.18",
+  "editor.formatOnSave": true,
+  "[solidity]": {
+    "editor.defaultFormatter": "JuanBlanco.solidity"
+  },
   "solidity.remappings": [
     "@openzeppelin/=./lib/openzeppelin-contracts/",
     "forge-std/=lib/forge-std/src/",
-    "@tokenized-strategy/=./lib/tokenized-strategy/src/",
+    "@tokenized-strategy/=lib/tokenized-strategy/src/",
     "@periphery/=./lib/tokenized-strategy-periphery/src/"
-  ]
+  ],
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#1E3310",
+    "titleBar.activeBackground": "#2A4817",
+    "titleBar.activeForeground": "#F7FBF4"
+  }
 }

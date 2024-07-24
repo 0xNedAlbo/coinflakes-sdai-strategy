@@ -75,6 +75,7 @@ contract FunctionSignatureTest is Setup {
         vm.stopPrank();
 
         // Mint some shares to the user
+
         airdrop(ERC20(address(strategy)), user, wad);
         assertEq(strategy.balanceOf(address(user)), wad, "balance");
         vm.prank(user);

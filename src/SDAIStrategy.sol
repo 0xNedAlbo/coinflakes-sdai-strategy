@@ -3,6 +3,8 @@ pragma solidity 0.8.18;
 
 import {BaseStrategy, ERC20} from "@tokenized-strategy/BaseStrategy.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {IERC20} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
+import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 
 // Import interfaces for many popular DeFi projects, or add your own!
 //import "../interfaces/<protocol>/<Interface>.sol";
@@ -20,13 +22,20 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 
 // NOTE: To implement permissioned functions you can use the onlyManagement, onlyEmergencyAuthorized and onlyKeepers modifiers
 
-contract Strategy is BaseStrategy {
+contract SDAIStrategy is BaseStrategy {
     using SafeERC20 for ERC20;
 
-    constructor(
-        address _asset,
-        string memory _name
-    ) BaseStrategy(_asset, _name) {}
+    IERC4626 public SDAI = IERC4626(0x83F20F44975D03b1b09e64809B757c47f942BEeA);
+    IERC20 public DAI;
+
+    constructor()
+        BaseStrategy(
+            0x6B175474E89094C44Da98b954EedeAC495271d0F,
+            "Coinflakes SDAI Strategy"
+        )
+    {
+        DAI = IERC20(asset);
+    }
 
     /*//////////////////////////////////////////////////////////////
                 NEEDED TO BE OVERRIDDEN BY STRATEGIST
@@ -44,9 +53,8 @@ contract Strategy is BaseStrategy {
      * to deposit in the yield source.
      */
     function _deployFunds(uint256 _amount) internal override {
-        // TODO: implement deposit logic EX:
-        //
-        //      lendingPool.deposit(address(asset), _amount ,0);
+        asset.approve(address(SDAI), _amount);
+        SDAI.deposit(_amount, address(this));
     }
 
     /**
@@ -71,9 +79,7 @@ contract Strategy is BaseStrategy {
      * @param _amount, The amount of 'asset' to be freed.
      */
     function _freeFunds(uint256 _amount) internal override {
-        // TODO: implement withdraw logic EX:
-        //
-        //      lendingPool.withdraw(address(asset), _amount);
+        SDAI.withdraw(_amount, address(this), address(this));
     }
 
     /**
@@ -100,17 +106,12 @@ contract Strategy is BaseStrategy {
      */
     function _harvestAndReport()
         internal
+        view
         override
         returns (uint256 _totalAssets)
     {
-        // TODO: Implement harvesting logic and accurate accounting EX:
-        //
-        //      if(!TokenizedStrategy.isShutdown()) {
-        //          _claimAndSellRewards();
-        //      }
-        //      _totalAssets = aToken.balanceOf(address(this)) + asset.balanceOf(address(this));
-        //
         _totalAssets = asset.balanceOf(address(this));
+        _totalAssets += SDAI.convertToAssets(SDAI.balanceOf(address(this)));
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -147,7 +148,9 @@ contract Strategy is BaseStrategy {
         // if(yieldSource.notShutdown()) {
         //    return asset.balanceOf(address(this)) + asset.balanceOf(yieldSource);
         // }
-        return asset.balanceOf(address(this));
+        return
+            asset.balanceOf(address(this)) +
+            SDAI.convertToAssets(SDAI.balanceOf(address(this)));
     }
 
     /**
