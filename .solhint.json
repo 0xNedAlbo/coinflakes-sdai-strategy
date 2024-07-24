@@ -32,6 +32,7 @@
     "no-console": "off",
     "no-global-import": "off",
     "var-name-mixedcase": "off",
-    "func-name-mixedcase": "off"
+    "func-name-mixedcase": "off",
+    "contract-name-camelcase": "off"
   }
 }
