@@ -8,3 +8,7 @@ For a more complete overview of how the Tokenized Strategies work please visit t
 ## How to start
 
 For instructions see [https://github.com/yearn/tokenized-strategy](https://github.com/yearn/tokenized-strategy).
+
+## Strategy
+
+This strategy allocates its funds to Savings DAI (https://app.spark.fi/savings).
